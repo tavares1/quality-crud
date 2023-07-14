@@ -29,7 +29,6 @@ function read(): Todo[] {
 
 function update(id: string, partialTodo: Partial<Todo>): Todo {
   let updatedTodo;
-  console.log(partialTodo.content)
   const todos = read()
   todos.forEach((currentTodo) => { 
     const isToUpdated = currentTodo.id === id
@@ -54,13 +53,49 @@ function updateContentById(id: string, content: string) {
   })
 }
 
+function deleteById(id: string) {
+  const todos = read()
+  const newTodos = todos.filter((todo) => {
+    if (todo.id === id) {
+      return false
+    }
+    return true
+  })  
+
+  fs.writeFileSync(DB_FILE_PATH, JSON.stringify({
+    todos: newTodos
+  }, null, 2))
+}
+
 function CLEAR_DB() {
   fs.writeFileSync(DB_FILE_PATH, "")
 }
 
 CLEAR_DB()
-create("Hoje eu preciso gravar aulas.\nTeste")
-create("Hoje eu preciso gravar mais aulas.\nTeste")
-const thirdTodo = create('Terceira atividade!')
-console.log(updateContentById(thirdTodo.id, "Comprar açai com a Amandinha"))
-// console.log(read())
+
+let todo: Todo;
+
+setTimeout(() => {
+  todo = create("Hoje eu preciso gravar aulas.\nTeste")
+},1000)
+
+setTimeout(() => {
+  todo = create("Hoje eu preciso gravar mais aulas.\nTeste")
+},2000)
+
+setTimeout(() => {
+  todo = create("Hoje eu preciso gravar mais e mais aulas.\nTeste")
+},3000)
+
+setTimeout(() => {
+  const thirdTodo = create('Terceira atividade!')
+  todo = updateContentById(thirdTodo.id, "Comprar açai com a Amandinha")
+},4000)
+
+setTimeout(() => {
+  deleteById(todo.id);
+}, 5000);
+
+setTimeout(() => {
+  console.log(read())
+}, 6000);
